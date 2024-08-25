@@ -1,3 +1,15 @@
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
@@ -106,6 +118,13 @@ progress::-moz-progress-bar {
 }
 
 
+.result {
+    margin-top: 20px;
+    font-weight: bold;
+    color: green;
+    animation: pulse 1.5s infinite;
+}
+
 .loader {
     border: 4px solid #f3f3f3;
     border-radius: 50%;
@@ -135,10 +154,14 @@ progress::-moz-progress-bar {
 
 .thumbnail img {
     width: 60px;
-    height: 80px;
+    height: 60px;
     object-fit: cover;
     border-radius: 10px;
     margin: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.thumbnail img:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
 

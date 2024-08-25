@@ -1,39 +1,28 @@
 document.getElementById('uploadInput').addEventListener('change', function() {
-    const thumbnailContainer = document.getElementById('thumbnailContainer')
-    thumbnailContainer.innerHTML = ''
+    const thumbnailContainer = document.getElementById('thumbnailContainer');
+    thumbnailContainer.innerHTML = ''; // Limpar o contêiner de miniaturas
 
-    if (uploadInput) {
-        uploadInput.addEventListener('change', function() {
-            thumbnailContainer.innerHTML = ''; // Limpar o contêiner de miniaturas
+    // Iterar sobre os arquivos selecionados
+    [...this.files].forEach(file => {
+        const fileReader = new FileReader();
 
-            // Iterar sobre os arquivos selecionados
-            [...this.files].forEach(file => {
-                const fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            if (file.type.startsWith('image/')) {
+                // Se o arquivo for uma imagem
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                thumbnailContainer.appendChild(img);
+            } else {
+                // Para arquivos que não são imagens
+                const fileIcon = document.createElement('div');
+                fileIcon.className = 'file-icon';
+                fileIcon.textContent = '📄'; // Ícone para arquivos não-imagem
+                thumbnailContainer.appendChild(fileIcon);
+            }
+        };
 
-                fileReader.onload = function(e) {
-                    if (file.type.startsWith('image/')) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        thumbnailContainer.appendChild(img);
-                    } else {
-                        const fileIcon = document.createElement('div');
-                        fileIcon.className = 'file-icon';
-                        fileIcon.textContent = '📄';
-                        thumbnailContainer.appendChild(fileIcon);
-                    }
-                };
-
-                if (file.type.startsWith('image/')) {
-                    fileReader.readAsDataURL(file);
-                } else {
-                    // Se não for uma imagem, ainda processar o arquivo para mostrar um ícone
-                    fileReader.readAsDataURL(file);
-                }
-            });
-        });
-    } else {
-        console.error('Elemento de input não encontrado!');
-    }
+        fileReader.readAsDataURL(file);
+    });
 });
 
 
@@ -43,6 +32,7 @@ async function upload() {
     const uploadButton = document.getElementById('uploadButton');
     const progressElement = document.getElementById('uploadProgress');
     const loader = document.getElementById('loader');
+    const resultParagraph = document.getElementById('result');
 
     fileInput.disabled = true;
     fileLabel.style.pointerEvents = 'none';
@@ -56,12 +46,16 @@ async function upload() {
 
     try {
         const transfer = await su.upload({ files: [...fileInput.files] });
-        console.log("Transfer", transfer); 
+        console.log("Transfer", transfer);
+        resultParagraph.style.color = 'green' 
+        resultParagraph.textContent = 'Enviado com sucesso!';
         progressElement.value = 100;
     } 
     catch(error) { 
         console.log("Error", error); 
         progressElement.hidden = true;
+        resultParagraph.style.color = 'red'
+        resultParagraph.textContent = 'Um erro ocorreu. Por favor, tente novamente.';
     }
     finally {
         fileInput.disabled = false;
